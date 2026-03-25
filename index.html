@@ -33,26 +33,27 @@
             margin: 0; -webkit-tap-highlight-color: transparent;
         }
 
-        .soft-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-radius: 2.5rem; border: 2px solid white; box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.1); }
+        .soft-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-radius: 2rem; border: 2px solid white; box-shadow: 0 10px 20px -5px rgba(244, 114, 182, 0.1); }
         .bubble-btn { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-bottom: 4px solid rgba(0,0,0,0.15); cursor: pointer; }
         .bubble-btn:active { transform: scale(0.96) translateY(2px); border-bottom-width: 1px; }
         
-        /* 🎨 버튼 형식 개선 */
+        /* 🖱️ 선택 버튼 스타일 개선 */
         .select-btn { 
-            @apply flex-1 py-4 rounded-2xl font-bold text-base transition-all border-2; 
-            box-shadow: 0 4px 0px rgba(0,0,0,0.05);
+            @apply flex-1 py-3 rounded-xl font-bold text-base transition-all border-2; 
+            box-shadow: 0 3px 0px rgba(0,0,0,0.03);
+            cursor: pointer;
         }
         .select-btn.active { 
             @apply bg-pink-500 text-white border-pink-600 shadow-inner; 
-            transform: translateY(2px);
+            transform: translateY(1px);
             box-shadow: none;
         }
         .select-btn.inactive { 
-            @apply bg-white text-slate-400 border-pink-100;
+            @apply bg-white text-slate-400 border-pink-50;
         }
         
         input, textarea { outline: none !important; -webkit-appearance: none; }
-        input::placeholder, textarea::placeholder { font-family: 'OngleipParkDahyeon' !important; opacity: 0.4; font-style: italic; }
+        input::placeholder, textarea::placeholder { font-family: 'OngleipParkDahyeon' !important; opacity: 0.4; }
 
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader { width: 24px; height: 24px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
@@ -172,41 +173,42 @@
                         </div>
                     )}
 
-                    <header className="px-8 pt-16 pb-6 text-center">
-                        <div className="inline-block px-8 py-3 rounded-full bg-white shadow-sm border border-pink-100 mb-4">
-                            <h1 className="text-2xl font-bold text-[#ff4d6d]">♤ {config.className} ♧</h1>
+                    <header className="px-8 pt-12 pb-4 text-center">
+                        <div className="inline-block px-6 py-2 rounded-full bg-white shadow-sm border border-pink-100 mb-3">
+                            <h1 className="text-xl font-bold text-[#ff4d6d]">♤ {config.className} ♧</h1>
                         </div>
                     </header>
 
-                    <main className="p-6 flex-grow overflow-y-auto">
+                    <main className="p-5 flex-grow overflow-y-auto">
                         {view === 'checkin' ? (
-                            <div className="space-y-6">
-                                <div className="soft-card p-6 text-center">
-                                    <div className="text-5xl font-bold text-slate-700 mb-2 tabular-nums font-sans">
+                            <div className="space-y-5">
+                                <div className="soft-card p-5 text-center">
+                                    <div className="text-4xl font-bold text-slate-700 mb-1 tabular-nums font-sans">
                                         {currentTime.toLocaleTimeString('ko-KR', {hour12:false, hour:'2-digit', minute:'2-digit', second:'2-digit'})}
                                     </div>
-                                    <div className="text-pink-400 text-xs font-bold tracking-widest uppercase">3-4 Attendance System</div>
+                                    <div className="text-pink-400 text-[10px] font-bold tracking-widest uppercase">3-4 Attendance System</div>
                                 </div>
                                 
-                                <form onSubmit={handleCheckIn} className="space-y-6">
-                                    {/* 1. 동일한 크기의 입력창 */}
+                                <form onSubmit={handleCheckIn} className="space-y-5">
+                                    {/* 1. 학번/성명 한 줄 가로 배치 */}
                                     <div className="flex gap-3">
-                                        <input className="flex-1 p-5 rounded-3xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-xl shadow-sm" placeholder="학번" value={studentId} onChange={e=>setStudentId(e.target.value)} required />
-                                        <input className="flex-1 p-5 rounded-3xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-xl shadow-sm" placeholder="성명" value={studentName} onChange={e=>setStudentName(e.target.value)} required />
+                                        <input className="flex-1 p-4 rounded-2xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-lg shadow-sm" placeholder="학번" value={studentId} onChange={e=>setStudentId(e.target.value)} required />
+                                        <input className="flex-1 p-4 rounded-2xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-lg shadow-sm" placeholder="성명" value={studentName} onChange={e=>setStudentName(e.target.value)} required />
                                     </div>
 
-                                    {/* 2. 눈에 띄는 버튼 형식 */}
-                                    <div className="space-y-3">
-                                        <p className="text-sm font-bold text-pink-500 ml-1">📍 출결 상태 선택</p>
-                                        <div className="flex gap-3">
+                                    {/* 2. 출결 상태 (가로 3개 꽉 차게) */}
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-bold text-pink-500 ml-1">📍 출결 상태</p>
+                                        <div className="flex gap-2">
                                             {['지각', '결석', '조퇴'].map(v => (
                                                 <button key={v} type="button" onClick={()=>setStatus(v)} className={`select-btn ${status === v ? 'active' : 'inactive'}`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <p className="text-sm font-bold text-pink-500 ml-1">🏷️ 유형 선택</p>
+                                    {/* 3. 유형 선택 (버튼 형식) */}
+                                    <div className="space-y-2">
+                                        <p className="text-sm font-bold text-pink-500 ml-1">🏷️ 유형</p>
                                         <div className="grid grid-cols-4 gap-2">
                                             {['질병', '미인정', '기타', '인정'].map(v => (
                                                 <button key={v} type="button" onClick={()=>setType(v)} className={`select-btn ${type === v ? 'active' : 'inactive'}`}>{v}</button>
@@ -214,18 +216,17 @@
                                         </div>
                                     </div>
 
-                                    {/* 3. 상세 사유 예시(Placeholder) 추가 */}
                                     <div className="space-y-2">
-                                        <p className="text-sm font-bold text-pink-500 ml-1">📝 상세 사유 입력</p>
+                                        <p className="text-sm font-bold text-pink-500 ml-1">📝 상세 사유</p>
                                         <textarea 
-                                            className="w-full p-5 rounded-[2rem] border-2 border-white bg-white/80 focus:border-pink-300 font-bold min-h-[120px] resize-none shadow-sm" 
+                                            className="w-full p-4 rounded-2xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold min-h-[100px] resize-none shadow-sm text-sm" 
                                             placeholder="ex) 11:40 학교 등교 / 감기로 인한 지각" 
                                             value={reason} 
                                             onChange={e=>setReason(e.target.value)} 
                                         />
                                     </div>
                                     
-                                    <button disabled={isLoading} className="bubble-btn w-full bg-[#ff4d6d] text-white font-bold py-5 rounded-[2.5rem] shadow-xl text-xl mt-4">
+                                    <button disabled={isLoading} className="bubble-btn w-full bg-[#ff4d6d] text-white font-bold py-4 rounded-2xl shadow-xl text-lg mt-2">
                                         {isLoading ? <span className="loader"></span> : "제출 완료하기!"}
                                     </button>
                                 </form>
@@ -264,10 +265,8 @@
                                 }} className="soft-card p-6 space-y-4">
                                     <label className="block px-2 text-[10px] font-bold text-slate-400 uppercase">Class Name</label>
                                     <input className="w-full p-3 border-b-2 font-bold text-pink-500" value={config.className} onChange={e=>setConfig({...config, className:e.target.value})} />
-                                    
-                                    <label className="block px-2 text-[10px] font-bold text-slate-400 uppercase">Google Form Settings</label>
-                                    <input className="w-full p-3 border-b-2 text-[11px] font-sans" value={config.formUrl} onChange={e=>setConfig({...config, formUrl:e.target.value})} placeholder="Form URL" />
-                                    
+                                    <label className="block px-2 text-[10px] font-bold text-slate-400 uppercase">Form URL</label>
+                                    <input className="w-full p-3 border-b-2 text-[11px] font-sans" value={config.formUrl} onChange={e=>setConfig({...config, formUrl:e.target.value})} />
                                     <div className="grid grid-cols-2 gap-3">
                                         <div><label className="text-[9px] font-bold text-slate-400">학번 entry</label><input className="w-full p-2 border-b-2 text-xs font-sans" value={config.studentIdEntry} onChange={e=>setConfig({...config, studentIdEntry:e.target.value})} /></div>
                                         <div><label className="text-[9px] font-bold text-slate-400">성명 entry</label><input className="w-full p-2 border-b-2 text-xs font-sans" value={config.nameEntry} onChange={e=>setConfig({...config, nameEntry:e.target.value})} /></div>
@@ -276,16 +275,9 @@
                                     </div>
                                     <label className="text-[9px] font-bold text-slate-400 block px-2">상세 사유 entry</label>
                                     <input className="w-full p-2 border-b-2 text-xs font-sans" value={config.reasonEntry} onChange={e=>setConfig({...config, reasonEntry:e.target.value})} />
-
-                                    <label className="block px-2 text-[10px] font-bold text-slate-400 uppercase">Sheet ID (for History)</label>
-                                    <input className="w-full p-3 border-b-2 text-[11px] font-sans" value={config.responseSheetId} onChange={e=>setConfig({...config, responseSheetId:e.target.value})} />
-                                    
                                     <label className="block px-2 text-[10px] font-bold text-slate-400 uppercase">Admin Passcode</label>
                                     <input type="password" title="pass" className="w-full p-3 border-b-2 font-sans" value={config.passcode} onChange={e=>setConfig({...config, passcode:e.target.value})} />
-                                    
-                                    <button disabled={isLoading} className="bubble-btn w-full bg-slate-700 text-white font-bold py-4 rounded-2xl mt-4">
-                                        {isLoading ? <span className="loader"></span> : "클라우드 설정 저장"}
-                                    </button>
+                                    <button disabled={isLoading} className="bubble-btn w-full bg-slate-700 text-white font-bold py-4 rounded-2xl mt-4">저장</button>
                                 </form>
                             </div>
                         )}
