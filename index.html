@@ -15,7 +15,6 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         @font-face {
@@ -23,7 +22,7 @@
             src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
             font-weight: normal; font-display: swap;
         }
-        :root { --primary: #ff85a1; --bg: #fdf2f8; }
+        :root { --primary: #ff4d6d; --bg: #fdf2f8; }
         * { font-family: 'OngleipParkDahyeon', sans-serif !important; letter-spacing: -0.02em; }
         
         body {
@@ -35,21 +34,20 @@
 
         .soft-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-radius: 2rem; border: 2px solid white; box-shadow: 0 10px 20px -5px rgba(244, 114, 182, 0.1); }
         
-        /* 🖱️ 사용자 요청 버튼 스타일 (분홍 -> 회색) */
-        .select-btn { 
-            @apply flex-1 py-3.5 rounded-2xl font-bold text-base transition-all border-b-4 active:scale-95; 
+        /* ✨ [핵심] 제출 버튼 스타일을 본뜬 선택 버튼 디자인 */
+        .option-btn { 
+            @apply flex-1 py-4 rounded-2xl font-bold text-lg transition-all border-b-4 active:scale-95; 
             cursor: pointer;
         }
-        /* 미선택 상태: 분홍색 */
-        .select-btn.inactive { 
-            @apply bg-pink-400 text-white border-pink-600 shadow-md;
+        /* 미선택 상태: 하단 버튼처럼 핑크색 */
+        .option-btn.inactive { 
+            @apply bg-[#ff4d6d] text-white border-[#e63958] shadow-lg;
         }
-        /* 선택 상태: 회색 */
-        .select-btn.active { 
-            @apply bg-gray-400 text-gray-100 border-gray-500;
+        /* 선택 상태: 회색으로 변하며 꾹 눌림 */
+        .option-btn.active { 
+            @apply bg-gray-400 text-gray-100 border-gray-500 shadow-inner;
             transform: translateY(2px);
-            border-bottom-width: 1px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom-width: 0px;
         }
         
         input, textarea { outline: none !important; -webkit-appearance: none; }
@@ -85,7 +83,7 @@
 
             const [studentId, setStudentId] = useState('');
             const [studentName, setStudentName] = useState('');
-            const [status, setStatus] = useState('정상등교'); // 기본값 추가
+            const [status, setStatus] = useState('정상등교'); 
             const [type, setType] = useState('질병'); 
             const [reason, setReason] = useState('');
             const [msg, setMsg] = useState({ type: '', text: '' });
@@ -159,27 +157,27 @@
                                         <input className="flex-1 p-4 rounded-2xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-lg" placeholder="성명" value={studentName} onChange={e=>setStudentName(e.target.value)} required />
                                     </div>
 
-                                    {/* 출결 상태 (정상등교 추가) */}
                                     <div className="space-y-3">
                                         <p className="text-sm font-bold text-pink-500 ml-1">📍 출결 상태 선택</p>
                                         <div className="grid grid-cols-2 gap-3">
                                             {['정상등교', '지각', '결석', '조퇴'].map(v => (
-                                                <button key={v} type="button" onClick={()=>setStatus(v)} className={`select-btn ${status === v ? 'active' : 'inactive'}`}>{v}</button>
+                                                <button key={v} type="button" onClick={()=>setStatus(v)} 
+                                                className={`option-btn ${status === v ? 'active' : 'inactive'}`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    {/* 유형 선택 */}
                                     <div className="space-y-3">
                                         <p className="text-sm font-bold text-pink-500 ml-1">🏷️ 유형 선택</p>
                                         <div className="grid grid-cols-4 gap-2">
                                             {['질병', '미인정', '기타', '인정'].map(v => (
-                                                <button key={v} type="button" onClick={()=>setType(v)} className={`select-btn ${type === v ? 'active' : 'inactive'}`}>{v}</button>
+                                                <button key={v} type="button" onClick={()=>setType(v)} 
+                                                className={`option-btn ${type === v ? 'active' : 'inactive'} !text-sm !py-3`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <textarea className="w-full p-4 rounded-2xl border-2 border-white bg-white/80 min-h-[100px] font-bold text-sm" placeholder="ex) 11:40 학교 등교 / 감기로 인한 지각" value={reason} onChange={e=>setReason(e.target.value)} />
+                                    <textarea className="w-full p-4 rounded-2xl border-2 border-white bg-white/80 min-h-[100px] font-bold text-sm shadow-sm" placeholder="ex) 11:40 학교 등교 / 감기로 인한 지각" value={reason} onChange={e=>setReason(e.target.value)} />
                                     
                                     <button disabled={isLoading} className="w-full bg-[#ff4d6d] text-white font-bold py-5 rounded-2xl shadow-xl text-xl border-b-4 border-[#e63958] active:border-b-0 active:translate-y-1 transition-all">
                                         {isLoading ? <span className="loader"></span> : "제출 완료하기!"}
@@ -187,10 +185,10 @@
                                 </form>
                             </div>
                         )}
-                        {/* 설정 및 조회 뷰는 기존과 동일하게 유지 */}
+                        {/* 설정 및 조회 뷰 생략 (기존 유지) */}
                     </main>
 
-                    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white/90 backdrop-blur-xl border border-pink-100 flex justify-around p-3 rounded-[3rem] shadow-2xl">
+                    <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-sm bg-white/90 backdrop-blur-xl border border-pink-100 flex justify-around p-3 rounded-[3rem] shadow-2xl">
                         <button onClick={()=>setView('checkin')} className={`flex flex-col items-center py-2 px-5 ${view==='checkin' ? 'text-[#ff4d6d]' : 'text-slate-300'}`}><span className="text-2xl">🐾</span><span className="text-[10px] font-bold">출석</span></button>
                         <button onClick={()=>setView('history')} className={`flex flex-col items-center py-2 px-5 ${view==='history' ? 'text-[#ff4d6d]' : 'text-slate-300'}`}><span className="text-2xl">🔍</span><span className="text-[10px] font-bold">조회</span></button>
                         <button onClick={()=>{const p = prompt('비밀번호'); if(p === config.passcode) setView('settings');}} className={`flex flex-col items-center py-2 px-5 ${view==='settings' ? 'text-[#ff4d6d]' : 'text-slate-300'}`}><span className="text-2xl">⚙️</span><span className="text-[10px] font-bold">설정</span></button>
