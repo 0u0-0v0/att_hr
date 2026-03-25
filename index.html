@@ -36,10 +36,15 @@
         .soft-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-radius: 2.5rem; border: 2px solid white; box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.1); }
         .bubble-btn { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-bottom: 4px solid rgba(0,0,0,0.1); cursor: pointer; }
         .bubble-btn:active { transform: scale(0.96) translateY(2px); border-bottom-width: 1px; }
-        .select-btn { @apply flex-1 py-3 rounded-2xl font-bold text-sm transition-all border-2; }
-        .select-btn.active { @apply bg-pink-500 text-white border-pink-500 shadow-inner; }
-        .select-btn.inactive { @apply bg-white text-slate-400 border-pink-50 shadow-sm; }
         
+        /* 🎨 여기에 스타일을 추가했습니다! */
+        .select-btn { @apply flex-1 py-3.5 rounded-[1.5rem] font-bold text-sm transition-all border-2; cursor: pointer;}
+        /* 선택된 상태: 진한 핑크색 바닥, 입체감 */
+        .select-btn.active { @apply bg-pink-500 text-white border-pink-500 shadow-inner; border-bottom: 3px solid rgba(0,0,0,0.15); }
+        /* 선택되지 않은 상태: 흰색/연분홍색 테두리 */
+        .select-btn.inactive { @apply bg-white text-slate-400 border-pink-50; shadow-sm; border-bottom: 2px solid rgba(244,114,182, 0.1); }
+        .select-btn:active { transform: scale(0.97); }
+
         input, textarea { outline: none !important; -webkit-appearance: none; }
         input::placeholder, textarea::placeholder { font-family: 'OngleipParkDahyeon' !important; opacity: 0.5; }
 
@@ -84,8 +89,9 @@
 
             const [studentId, setStudentId] = useState('');
             const [studentName, setStudentName] = useState('');
-            const [status, setStatus] = useState('지각'); // 지각, 결석, 조퇴
-            const [type, setType] = useState('질병'); // 질병, 미인정, 기타, 인정
+            // 상태 초기값을 '지각'으로 설정하여, 처음 들어왔을 때 '지각' 버튼이 활성화(핑크색)되게 합니다.
+            const [status, setStatus] = useState('지각'); 
+            const [type, setType] = useState('질병'); // 유형 초기값은 '질병'
             const [reason, setReason] = useState('');
             const [msg, setMsg] = useState({ type: '', text: '' });
 
@@ -121,22 +127,18 @@
                     params.append(toEntry(config.studentIdEntry), studentId.trim());
                     params.append(toEntry(config.nameEntry), studentName.trim());
                     
-                    // 신규 항목 추가 (설정되어 있을 때만 전송)
                     if(config.statusEntry) params.append(toEntry(config.statusEntry), status);
                     if(config.typeEntry) params.append(toEntry(config.typeEntry), type);
                     if(config.reasonEntry && reason.trim()) params.append(toEntry(config.reasonEntry), reason.trim());
 
-                    await fetch(actionUrl, {
-                        method: 'POST', mode: 'no-cors',
+                    await fetch(actionUrl, { method: 'POST', mode: 'no-cors',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: params.toString()
                     });
 
                     showToast('success', `${studentName}님, 제출 완료! 🍀`);
                     setStudentId(''); setStudentName(''); setReason('');
-                } catch (err) {
-                    alert('전송 중 오류 발생!');
-                }
+                } catch (err) { alert('전송 중 오류 발생!'); }
                 setIsLoading(false);
             };
 
@@ -181,31 +183,32 @@
                                     <div className="text-pink-400 text-xs font-bold tracking-widest uppercase">3-4 Attendance System</div>
                                 </div>
                                 
-                                <form onSubmit={handleCheckIn} className="space-y-4">
+                                <form onSubmit={handleCheckIn} className="space-y-5">
                                     <div className="flex gap-2">
-                                        <input className="w-1/3 p-4 rounded-3xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-xl shadow-sm" placeholder="학번" value={studentId} onChange={e=>setStudentId(e.target.value)} required />
-                                        <input className="w-2/3 p-4 rounded-3xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-xl shadow-sm" placeholder="성명" value={studentName} onChange={e=>setStudentName(e.target.value)} required />
+                                        <input className="w-1/3 p-4 rounded-3xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-xl shadow-sm placeholder:text-slate-300" placeholder="학번" value={studentId} onChange={e=>setStudentId(e.target.value)} required />
+                                        <input className="w-2/3 p-4 rounded-3xl border-2 border-white bg-white/80 focus:border-pink-300 font-bold text-xl shadow-sm placeholder:text-slate-300" placeholder="성명" value={studentName} onChange={e=>setStudentName(e.target.value)} required />
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <p className="text-xs font-bold text-pink-400 ml-2">출결 상태 선택</p>
-                                        <div className="flex gap-2">
+                                    <div className="space-y-2.5">
+                                        <p className="text-[12px] font-bold text-pink-500 ml-2 italic">출결 상태 선택 🐾</p>
+                                        <div className="flex gap-2.5">
+                                            {/* 🖱️ 클릭 로직: onClick={()=>setStatus(v)} 으로 클릭한 값을 status로 저장합니다. */}
                                             {['지각', '결석', '조퇴'].map(v => (
                                                 <button key={v} type="button" onClick={()=>setStatus(v)} className={`select-btn ${status === v ? 'active' : 'inactive'}`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <p className="text-xs font-bold text-pink-400 ml-2">유형 선택</p>
-                                        <div className="grid grid-cols-4 gap-2">
+                                    <div className="space-y-2.5">
+                                        <p className="text-[12px] font-bold text-pink-500 ml-2 italic">유형 선택 🏷️</p>
+                                        <div className="grid grid-cols-4 gap-2.5">
                                             {['질병', '미인정', '기타', '인정'].map(v => (
                                                 <button key={v} type="button" onClick={()=>setType(v)} className={`select-btn ${type === v ? 'active' : 'inactive'}`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <textarea className="w-full p-5 rounded-[2rem] border-2 border-white bg-white/80 focus:border-pink-300 font-bold min-h-[100px] resize-none shadow-sm" placeholder="상세 사유를 입력하세요 (선택 사항)" value={reason} onChange={e=>setReason(e.target.value)} />
+                                    <textarea className="w-full p-5 rounded-[2rem] border-2 border-white bg-white/80 focus:border-pink-300 font-bold min-h-[100px] resize-none shadow-sm placeholder:text-slate-300 placeholder:italic" placeholder="상세 사유를 입력하세요 (선택 사항)" value={reason} onChange={e=>setReason(e.target.value)} />
                                     
                                     <button disabled={isLoading} className="bubble-btn w-full bg-[#ff4d6d] text-white font-bold py-5 rounded-[2.5rem] shadow-xl text-xl mt-4">
                                         {isLoading ? <span className="loader"></span> : "제출 완료하기!"}
