@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>3학년 4반 출결관리🍀</title>
     
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="3-4출결">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5663/5123119.png">
-    <link rel="manifest" href="manifest.json">
-
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -23,7 +17,7 @@
             src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
             font-weight: normal; font-display: swap;
         }
-        :root { --primary: #ff4d6d; --bg: #fdf2f8; }
+        :root { --primary: #ff4d6d; --primary-dark: #e63958; --bg: #fdf2f8; }
         * { font-family: 'OngleipParkDahyeon', sans-serif !important; letter-spacing: -0.02em; }
         
         body {
@@ -35,29 +29,43 @@
 
         .soft-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); border-radius: 2rem; border: 2px solid white; box-shadow: 0 10px 20px -5px rgba(244, 114, 182, 0.1); }
         
-        /* [핵심] 제출 버튼과 동일한 입체형 선택 버튼 스타일 */
-        .pretty-btn {
-            @apply flex-1 font-bold transition-all border-b-4 active:scale-95 text-center flex items-center justify-center;
-            border-radius: 1.25rem;
+        /* ✨ [핵심] 사용자님이 원하시는 도톰한 양각 버튼 스타일 */
+        .btn-raised {
+            @apply flex-1 font-bold transition-all text-center flex items-center justify-center;
+            border-radius: 1.5rem;
+            border-bottom: 5px solid var(--primary-dark);
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        /* 미선택 상태: 예쁜 핑크색 */
-        .btn-inactive {
-            @apply bg-[#ff4d6d] text-white border-[#e63958] shadow-lg;
-        }
-        /* 선택 상태: 회색으로 변하며 꾹 눌림 */
-        .btn-active {
-            @apply bg-gray-400 text-gray-100 border-gray-500 shadow-inner;
-            transform: translateY(2px);
-            border-bottom-width: 0px;
+        .btn-raised:active {
+            transform: translateY(3px);
+            border-bottom-width: 1px;
+            box-shadow: none;
         }
 
-        /* 메인 제출 버튼 전용 스타일 */
+        /* 선택되었을 때 (음각/눌린 느낌) */
+        .btn-selected {
+            @apply bg-gray-400 border-gray-500 text-gray-100 shadow-inner;
+            border-bottom-width: 0px !important;
+            transform: translateY(4px);
+        }
+
+        /* 하단 메인 제출 버튼 */
         .submit-main {
-            @apply w-full bg-[#ff4d6d] text-white font-bold py-5 rounded-[2.5rem] shadow-xl text-xl border-b-4 border-[#e63958] active:border-b-0 active:translate-y-1 transition-all;
+            @apply w-full font-bold py-5 rounded-[2.5rem] text-xl transition-all;
+            background-color: var(--primary);
+            color: white;
+            border-bottom: 6px solid var(--primary-dark);
+            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.3);
+        }
+        .submit-main:active {
+            transform: translateY(4px);
+            border-bottom-width: 1px;
         }
         
         input, textarea { outline: none !important; -webkit-appearance: none; }
-        input::placeholder { opacity: 0.4; }
+        input::placeholder, textarea::placeholder { opacity: 0.5; font-style: italic; }
 
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader { width: 24px; height: 24px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
@@ -73,9 +81,7 @@
         function App() {
             const [appId] = useState(() => {
                 const urlParams = new URLSearchParams(window.location.search);
-                const idFromUrl = urlParams.get('id');
-                if (idFromUrl) { localStorage.setItem('saved_attendance_id', idFromUrl); return idFromUrl; }
-                return localStorage.getItem('saved_attendance_id') || 'default';
+                return urlParams.get('id') || localStorage.getItem('saved_attendance_id') || 'default';
             });
 
             const [view, setView] = useState('checkin');
@@ -180,7 +186,7 @@
                                         <div className="grid grid-cols-2 gap-3">
                                             {['정상등교', '지각', '결석', '조퇴'].map(v => (
                                                 <button key={v} type="button" onClick={()=>setStatus(v)} 
-                                                className={`pretty-btn py-4 ${status === v ? 'btn-active' : 'btn-inactive'}`}>{v}</button>
+                                                className={`btn-raised py-4 ${status === v ? 'btn-selected' : ''}`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
@@ -190,7 +196,7 @@
                                         <div className="grid grid-cols-4 gap-2">
                                             {['질병', '미인정', '기타', '인정'].map(v => (
                                                 <button key={v} type="button" onClick={()=>setType(v)} 
-                                                className={`pretty-btn py-3 text-sm ${type === v ? 'btn-active' : 'btn-inactive'}`}>{v}</button>
+                                                className={`btn-raised py-3 text-sm ${type === v ? 'btn-selected' : ''}`}>{v}</button>
                                             ))}
                                         </div>
                                     </div>
@@ -208,14 +214,14 @@
                                 <form onSubmit={fetchHistory} className="soft-card p-6 space-y-4">
                                     <input className="w-full p-4 rounded-2xl border-2 border-pink-50 font-bold shadow-sm" placeholder="학번" value={studentId} onChange={e=>setStudentId(e.target.value)} required />
                                     <input className="w-full p-4 rounded-2xl border-2 border-pink-50 font-bold shadow-sm" placeholder="성명" value={studentName} onChange={e=>setStudentName(e.target.value)} required />
-                                    <button className="submit-main !py-4 !text-lg">기록 조회하기</button>
+                                    <button className="submit-main !py-4 !text-lg">조회하기</button>
                                 </form>
                                 {historyData && (
                                     <div className="space-y-3 pb-10">
                                         {historyData.length > 0 ? historyData.map((h, i) => (
                                             <div key={i} className="soft-card p-5 border-l-8 border-pink-400">
                                                 <p className="text-[10px] text-slate-400 font-sans font-bold">{h.date}</p>
-                                                <p className="font-bold text-slate-700">{h.status || "정상등교"} [{h.type || "일반"}]</p>
+                                                <p className="font-bold text-slate-700">{h.status || "정상"} [{h.type || "일반"}]</p>
                                                 <p className="text-xs text-slate-500 mt-1">{h.reason || "-"}</p>
                                             </div>
                                         )) : <p className="text-center py-20 font-bold text-slate-400">기록이 없어요!</p>}
@@ -232,29 +238,29 @@
                                     .catch(() => alert('저장 실패!'))
                                     .finally(() => setIsLoading(false));
                                 }} className="soft-card p-6 space-y-3">
-                                    <div><label className="text-[10px] font-bold text-slate-400 ml-2">CLASS NAME</label>
+                                    <div><label className="text-[10px] font-bold text-slate-400">학급 명칭</label>
                                     <input className="w-full p-2 border-b-2 font-bold text-pink-500" value={config.className} onChange={e=>setConfig({...config, className:e.target.value})} /></div>
                                     
-                                    <div><label className="text-[10px] font-bold text-slate-400 ml-2">FORM URL</label>
+                                    <div><label className="text-[10px] font-bold text-slate-400">FORM URL (viewform)</label>
                                     <input className="w-full p-2 border-b-2 text-[10px] font-sans" value={config.formUrl} onChange={e=>setConfig({...config, formUrl:e.target.value})} /></div>
                                     
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-2 gap-4">
                                         <div><label className="text-[9px] font-bold text-slate-400">학번 ENTRY</label><input className="w-full p-2 border-b-2 text-xs font-sans" value={config.studentIdEntry} onChange={e=>setConfig({...config, studentIdEntry:e.target.value})} /></div>
                                         <div><label className="text-[9px] font-bold text-slate-400">성명 ENTRY</label><input className="w-full p-2 border-b-2 text-xs font-sans" value={config.nameEntry} onChange={e=>setConfig({...config, nameEntry:e.target.value})} /></div>
-                                        <div><label className="text-[9px] font-bold text-slate-400">상태 ENTRY</label><input className="w-full p-2 border-b-2 text-xs font-sans" value={config.statusEntry} onChange={e=>setConfig({...config, statusEntry:e.target.value})} /></div>
-                                        <div><label className="text-[9px] font-bold text-slate-400">유형 ENTRY</label><input className="w-full p-2 border-b-2 text-xs font-sans" value={config.typeEntry} onChange={e=>setConfig({...config, typeEntry:e.target.value})} /></div>
+                                        <div><label className="text-[9px] font-bold text-slate-400 text-pink-500">출결상태 ENTRY</label><input className="w-full p-2 border-b-2 text-xs font-sans bg-pink-50/30" value={config.statusEntry} onChange={e=>setConfig({...config, statusEntry:e.target.value})} /></div>
+                                        <div><label className="text-[9px] font-bold text-slate-400 text-pink-500">유형 ENTRY</label><input className="w-full p-2 border-b-2 text-xs font-sans bg-pink-50/30" value={config.typeEntry} onChange={e=>setConfig({...config, typeEntry:e.target.value})} /></div>
                                     </div>
                                     
-                                    <div><label className="text-[9px] font-bold text-slate-400 ml-2">사유 ENTRY</label>
+                                    <div><label className="text-[9px] font-bold text-slate-400">사유 ENTRY</label>
                                     <input className="w-full p-2 border-b-2 text-xs font-sans" value={config.reasonEntry} onChange={e=>setConfig({...config, reasonEntry:e.target.value})} /></div>
                                     
-                                    <div><label className="text-[10px] font-bold text-slate-400 ml-2">RESPONSE SHEET ID</label>
+                                    <div><label className="text-[10px] font-bold text-slate-400">RESPONSE SHEET ID</label>
                                     <input className="w-full p-2 border-b-2 text-[10px] font-sans" value={config.responseSheetId} onChange={e=>setConfig({...config, responseSheetId:e.target.value})} /></div>
 
-                                    <div><label className="text-[10px] font-bold text-slate-400 ml-2">ADMIN PASSCODE</label>
+                                    <div><label className="text-[10px] font-bold text-slate-400">비밀번호</label>
                                     <input type="password" title="pass" className="w-full p-2 border-b-2 font-sans" value={config.passcode} onChange={e=>setConfig({...config, passcode:e.target.value})} /></div>
                                     
-                                    <button disabled={isLoading} className="submit-main !bg-slate-700 !border-slate-800 !py-4 !text-lg mt-2">설정 저장</button>
+                                    <button disabled={isLoading} className="submit-main !bg-slate-700 !border-slate-800 !py-4 !text-lg mt-4">설정 저장</button>
                                 </form>
                             </div>
                         )}
