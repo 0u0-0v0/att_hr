@@ -1,0 +1,16 @@
+{
+  "name": "출석 관리🍀",
+  "short_name": "출결앱",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdf2f8",
+  "theme_color": "#ff4d6d",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
