@@ -63,16 +63,8 @@
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx02Pe6ICImcyEACTyhw2HNmhvKJtHIAJDKxX2AtCVxVaPpWXBEXrvQvqX8wAtNCMSD/exec";
 
         function App() {
-            const [appId] = useState(() => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const idFromUrl = urlParams.get('id');
-                if (idFromUrl) {
-                    localStorage.setItem('saved_attendance_id', idFromUrl);
-                    return idFromUrl;
-                }
-                return localStorage.getItem('saved_attendance_id') || 'default';
-            });
-
+            // 기존의 복잡한 로직을 지우고, 아래처럼 딱 한 줄로 'hr304'라고 이름을 지어줍니다.
+            const [appId] = useState('hr304');
             const [view, setView] = useState('checkin');
             const [isLoading, setIsLoading] = useState(false);
             const [currentTime, setCurrentTime] = useState(new Date());
